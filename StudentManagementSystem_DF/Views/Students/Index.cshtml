@@ -1,0 +1,67 @@
+﻿
+@model IEnumerable<StudentManagementSystem_DF.Models.Student>
+    <h2>Student Details</h2>
+<a href="@Url.Action("Create")"class="btn btn-primary">+Add</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Photo</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Date Of Birth</th>
+            <th>Status</th>
+            <th>Courese</th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach(var s in Model)
+            {
+                <tr id="row-@s.StudentId">
+
+                    <td>
+                        @if (s.StudentPhoto != null && s.StudentPhoto.Length > 0)
+                        {
+                            var base64 = Convert.ToBase64String(s.StudentPhoto);
+                            var imgsrc = $"data:image/jpeg;base64,{base64}";
+                            <img src="@imgsrc " width="60" height="60" class="img-circle" />
+                        }
+                    </td>
+                        <td>@s.StudentName</td>
+                    <td>@(s.Department !=null ? s.Department.DepartmrentName:"N/A")</td>
+                    <td>@s.DateOfBirth.ToString("dd MM yyyy")</td>
+                    <td>@(s.IsRegular ?"Regular":"Irregular")</td>
+                    <td>@string.Join(",",s.Courses.Select(x=>$"{x.CourseName},{x.Credit}"))</td>
+                        
+                    <td>
+                        <a href="@Url.Action("Details", new {id=s.StudentId})" class="btn btn-xs btn-info">View</a>
+                        <a href="@Url.Action("Edit", new {id=s.StudentId})" class="btn btn-xs btn-warning">Edit</a>
+                        <button class="btn btn-xs btn-danger btnAjaxDelete"data-id="@s.StudentId"data-name="@s.StudentName" >Delete</button>
+                    </td>
+                    </tr>
+            }
+    </tbody>
+</table>
+
+@Html.AntiForgeryToken()
+
+@section scripts{
+    <script>
+          $(document).on('click', '.btnAjaxDelete', function () {
+
+    if (!confirm('Delete ' + $(this).data('name') + '?')) return;
+    var id = $(this).data('id');
+
+            $.ajax({
+     url: '@Url.Action("AjaxDelete","Students")', type: 'POST',
+     data: { id: id, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
+     success: function (r) { if (r.success) $('#row-' + id).fadeOut(400, function () { $(this).remove(); }); }
+ });
+        });
+
+    </script>
+    }
+

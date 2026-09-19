@@ -1,0 +1,74 @@
+﻿
+@model List<StudentManagementSystem_DF.Models.Course>
+
+<div style="margin-bottom:80px">
+    <button type="button" class="btn btn-success btn-xs" id="addRow">
+        <i class="fa fa-plus"></i> Add Course
+
+    </button>
+</div>
+<table class="table table-bordered"id="courseTable">
+    <thead>
+        <tr>
+            <th>Course Name(TEXT)</th>
+            <th>Credit (NUMBER) <th>
+            <th>Action</th>
+
+        </tr>
+    </thead>
+
+    <tbody id="courseBody">
+
+        @if (Model != null && Model.Count > 0)
+        {
+            for (int i = 0; i < Model.Count; i++)
+            {
+                <tr class="course-row">
+                    <td>
+                        <input type="text"
+                               name="Courses[@i].CourseName"
+                               value="@Model[i].CourseName"
+                               class="form-control"
+                               placeholder="e.g.Programming" />
+                    </td>
+                    <td>
+                        <input type="number"
+                               name="Courses[@i].Credit"
+                               value="@Model[i].Credit"
+                               class="form-control"
+                               step="0.5" min="0" max="6" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-xs removeRow">
+                            <i class="fa fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+
+         else
+            {
+    <tr class="course-row">
+        <td>
+            <input type="text"
+                   name="Courses[0].CourseName"
+                   class="form-control"
+                   placeholder="e.g.Programming" />
+        </td>
+        <td>
+            <input type="number"
+                   name="Courses[0].Credit"
+                   class="form-control"
+                   step="0.5" min="0" max="6" />
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-xs removeRow">
+                <i class="fa fa-trash"></i>
+            </button>
+        </td>
+    </tr>
+        }
+    </tbody>
+
+</table>

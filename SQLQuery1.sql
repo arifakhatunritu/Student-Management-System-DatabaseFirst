@@ -1,0 +1,29 @@
+USE master
+GO
+CREATE DATABASE StudentDetails
+GO
+USE StudentDetails
+GO
+CREATE TABLE Department(
+DepartmentId INT PRIMARY KEY IDENTITY(1,1)NOT NULL,
+DepartmrentName NVARCHAR(50)NOT NULL
+)
+GO
+CREATE TABLE Students(
+StudentId INT PRIMARY KEY IDENTITY(1,1)NOT NULL,
+StudentName NVARCHAR(50)NOT NULL,
+DateOfBirth DATETIME NOT NULL,
+IsRegular BIT NOT NULL,
+StudentPhoto VARBINARY (MAX)null,
+DepartmentId INT REFERENCES Department(DepartmentId)NOT NULL
+)
+GO
+CREATE  TABLE Course (
+CourseId INT PRIMARY KEY IDENTITY(1,1)NOT NULL,
+CourseName NVARCHAR(50)NOT NULL,
+Credit DECIMAL(4,2)NOT NULL,
+StudentId INT REFERENCES Students(StudentId)NOT NULL
+)
+GO
+
+

@@ -1,0 +1,71 @@
+﻿@model StudentManagementSystem_DF.Models.ViewModel.StudentVM
+<div id="msg"></div>
+@using (Ajax.BeginForm(new AjaxOptions
+{
+    HttpMethod = "POST",
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "msg",
+    OnComplete = "clearAll"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.StudentId)
+    @Html.HiddenFor(m => m.StudentPhoto)
+
+
+    @Html.LabelFor(m => m.StudentName)
+    @Html.TextBoxFor(m => m.StudentName, new { @class = "form-control" })
+
+
+    @Html.LabelFor(m => m.DepartmentId)
+    @Html.DropDownListFor(m => m.DepartmentId, Model.Departments, "--Select Department--", new { @class = "form-control" })
+
+    @Html.LabelFor(m => m.DateOfBirth)
+    @Html.TextBoxFor(m => m.DateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+
+    @Html.CheckBoxFor(m => m.IsRegular) <label>Regular</label>
+
+
+    <input type="file" name="Picture" id="picInput" />
+    <img id="preview" width="60" height="60" style="border-radius:50%; @(string.IsNullOrEmpty(Model.StudentPhoto) ? "display:none" : "") "
+     src="@(string.IsNullOrEmpty(Model.StudentPhoto) ? "#" : Model.StudentPhoto)" />
+
+
+    @Html.Partial("_CourseRows", Model.Courses)
+
+    <button type="submit" class="btn btn-primary">Update</button>
+    <a href="@Url.Action("Index")" class="btn btn-default">Cancel</a>
+
+}
+
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script type="text/javascript">
+        $("#form0").attr("enctype", "multipart/form-data")
+        function clearAll() {
+            $("#form0").trigger("reset");
+
+            $("#picInput").val("");
+
+            $("#preview").attr("src", "").hide();
+        }
+        $('#picInput').change(function () {
+            var r = new FileReader();
+            r.onload = e => $('#preview').attr('src', e.target.result).show();
+
+            r.readAsDataURL(this.files[0]);
+        });
+
+        $('#addRow').click(function () {
+            var i = $('#courseBody tr').length;
+            $('#courseBody').append('<tr class="course-row"><td><input type="text" name="Courses[' + i + '].CourseName" class="form-control"/></td><td><input type = "number" name = "Courses[' + i + '].Credit" value = "3" class= "form-control" step = "0.5" /></td> <td><button type="button" class="btn btn-danger btn-xs removeRow">X</button></td></tr >');
+        });
+
+        $(document).on('click', '.removeRow', function () {
+            if ($('#courseBody tr').length > 1) $(this).closest('tr').remove();
+        });
+    </script>
+
+}
+
